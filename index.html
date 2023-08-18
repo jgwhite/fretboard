@@ -82,16 +82,16 @@
         font-size: 12px;
         font-weight: 600;
       }
-      [data-content="1"] {
+      [data-degree="1"] {
         background-color: #7f2137;
       }
-      [data-content="3"] {
+      [data-degree="3"] {
         background-color: #b1aa6a;
       }
-      [data-content="5"] {
+      [data-degree="5"] {
         background-color: #1d2f55;
       }
-      [data-content="♭7"] {
+      [data-degree="♭7"] {
         background-color: #98505a;
       }
     </style>
@@ -101,15 +101,10 @@
 
       drawFretboard();
       for (let i = 1; i <= 6; i++) {
-        drawOccurrences({ string: i, note: 1, content: "1" });
-        drawOccurrences({ string: i, note: 5, content: "3" });
-        drawOccurrences({ string: i, note: 8, content: "5" });
-        drawOccurrences({
-          string: i,
-          note: 11,
-          content: "♭7",
-          class: "flat-seventh",
-        });
+        drawOccurrences({ string: i, note: 1, degree: "1" });
+        drawOccurrences({ string: i, note: 5, degree: "3" });
+        drawOccurrences({ string: i, note: 8, degree: "5" });
+        drawOccurrences({ string: i, note: 11, degree: "♭7" });
       }
 
       function drawFretboard() {
@@ -162,7 +157,7 @@
         neck.appendChild(div);
       }
 
-      function drawOccurrences({ string, note, content }) {
+      function drawOccurrences({ string, note, degree }) {
         for (let i = 1; i <= 16; i++) {
           let j = (i + offsetForString(string)) % 12;
           let isNote = j % 12 === note - 1;
@@ -173,9 +168,9 @@
 
           let offset = (i - 0.5) / 16;
           let div = document.createElement("div");
-          div.innerHTML = content;
+          div.innerHTML = degree;
           div.classList.add("note");
-          div.setAttribute("data-content", content);
+          div.setAttribute("data-degree", degree);
           div.style.left = `${((string - 1) / 5) * 100}%`;
           div.style.top = `${offset * 100}%`;
           neck.appendChild(div);
