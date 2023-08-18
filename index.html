@@ -4,8 +4,6 @@
   <head>
     <meta charset="utf8" />
     <title>Fretboard</title>
-  </head>
-  <body>
     <style>
       html {
         font-family: system-ui;
@@ -94,39 +92,56 @@
       [data-degree="♭7"] {
         background-color: #98505a;
       }
+      .picker {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+      }
     </style>
+  </head>
+  <body>
     <script>
       let root = document.body;
+      let tonic = 1;
       let neck;
 
-      drawFretboard();
-      let tonic = 1;
-      for (let i = 1; i <= 6; i++) {
-        for (let [offset, degree] of [
-          [0, "1"],
-          [4, "3"],
-          [7, "5"],
-          [10, "♭7"],
-        ]) {
-          drawOccurrences({
-            string: i,
-            note: ((tonic - 1 + offset) % 12) + 1,
-            degree,
-          });
-        }
+      draw();
+
+      function draw() {
+        root.innerHTML = "";
+        drawFretboard();
+        drawPicker();
       }
 
       function drawFretboard() {
         drawNeck();
         drawNut();
+
         for (let i = 1; i <= 16; i++) {
           drawFret(i);
         }
+
         for (let i = 1; i <= 6; i++) {
           drawString(i);
         }
+
         for (let i of [3, 5, 7, 9, 12, 15]) {
           drawMarker(i);
+        }
+
+        for (let i = 1; i <= 6; i++) {
+          for (let [offset, degree] of [
+            [0, "1"],
+            [4, "3"],
+            [7, "5"],
+            [10, "♭7"],
+          ]) {
+            drawOccurrences({
+              string: i,
+              note: ((tonic - 1 + offset) % 12) + 1,
+              degree,
+            });
+          }
         }
       }
 
@@ -188,6 +203,36 @@
 
       function offsetForString(string) {
         return [4, 9, 2, 7, 11, 4][string - 1];
+      }
+
+      function drawPicker() {
+        let picker = document.createElement("select");
+        for (let [label, value] of [
+          ["C", 1],
+          ["C♯", 2],
+          ["D", 3],
+          ["D♯", 4],
+          ["E", 5],
+          ["F", 6],
+          ["F♯", 7],
+          ["G", 8],
+          ["G♯", 9],
+          ["A", 10],
+          ["A♯", 11],
+          ["B", 12],
+        ]) {
+          let option = document.createElement("option");
+          option.value = value;
+          option.innerHTML = label;
+          picker.appendChild(option);
+          picker.value = tonic;
+        }
+        root.appendChild(picker);
+        picker.addEventListener("change", () => {
+          tonic = Number(picker.value);
+          draw();
+        });
+        picker.classList.add("picker");
       }
     </script>
   </body>
