@@ -78,12 +78,21 @@
         display: flex;
         align-items: center;
         justify-content: center;
-      }
-      .first {
-        background-color: #7f2137;
         color: white;
         font-size: 12px;
         font-weight: 600;
+      }
+      .first {
+        background-color: #7f2137;
+      }
+      .third {
+        background-color: #b1aa6a;
+      }
+      .fifth {
+        background-color: #1d2f55;
+      }
+      .flat-seventh {
+        background-color: #98505a;
       }
     </style>
     <script>
@@ -91,21 +100,11 @@
       let neck;
 
       drawFretboard();
-
-      for (let i = 1; i <= 16; i++) {
-        let j = i + 4; // E
-        let isC = j % 12 === 0;
-
-        if (!isC) {
-          continue;
-        }
-
-        let offset = (i - 0.5) / 16;
-        let div = document.createElement("div");
-        div.classList.add("degree", "first");
-        div.innerHTML = "1";
-        div.style.top = `${offset * 100}%`;
-        neck.appendChild(div);
+      for (let i = 1; i <= 6; i++) {
+        drawNote(i, 1, "1", "first");
+        drawNote(i, 5, "3", "third");
+        drawNote(i, 8, "5", "fifth");
+        drawNote(i, 10, "♭7", "flat-seventh");
       }
 
       function drawFretboard() {
@@ -156,6 +155,30 @@
         div.classList.add("marker");
         div.style.top = `${offset * 100}%`;
         neck.appendChild(div);
+      }
+
+      function drawNote(string, note, content, degree) {
+        for (let i = 1; i <= 16; i++) {
+          let j = (i + offsetForString(string)) % 12;
+          console.log(i, j);
+          let isFirst = j % 12 === note - 1;
+
+          if (!isFirst) {
+            continue;
+          }
+
+          let offset = (i - 0.5) / 16;
+          let div = document.createElement("div");
+          div.classList.add("degree", degree);
+          div.innerHTML = content;
+          div.style.left = `${((string - 1) / 5) * 100}%`;
+          div.style.top = `${offset * 100}%`;
+          neck.appendChild(div);
+        }
+      }
+
+      function offsetForString(string) {
+        return [4, 9, 2, 7, 11, 4][string - 1];
       }
     </script>
   </body>
