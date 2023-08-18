@@ -100,11 +100,20 @@
       let neck;
 
       drawFretboard();
+      let tonic = 1;
       for (let i = 1; i <= 6; i++) {
-        drawOccurrences({ string: i, note: 1, degree: "1" });
-        drawOccurrences({ string: i, note: 5, degree: "3" });
-        drawOccurrences({ string: i, note: 8, degree: "5" });
-        drawOccurrences({ string: i, note: 11, degree: "♭7" });
+        for (let [offset, degree] of [
+          [0, "1"],
+          [4, "3"],
+          [7, "5"],
+          [10, "♭7"],
+        ]) {
+          drawOccurrences({
+            string: i,
+            note: ((tonic - 1 + offset) % 12) + 1,
+            degree,
+          });
+        }
       }
 
       function drawFretboard() {
@@ -158,7 +167,7 @@
       }
 
       function drawOccurrences({ string, note, degree }) {
-        for (let i = 1; i <= 16; i++) {
+        for (let i = 0; i <= 16; i++) {
           let j = (i + offsetForString(string)) % 12;
           let isNote = j % 12 === note - 1;
 
