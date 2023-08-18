@@ -104,7 +104,7 @@
         drawNote(i, 1, "1", "first");
         drawNote(i, 5, "3", "third");
         drawNote(i, 8, "5", "fifth");
-        drawNote(i, 10, "♭7", "flat-seventh");
+        drawNote(i, 11, "♭7", "flat-seventh");
       }
 
       function drawFretboard() {
@@ -160,10 +160,10 @@
       function drawNote(string, note, content, degree) {
         for (let i = 1; i <= 16; i++) {
           let j = (i + offsetForString(string)) % 12;
-          console.log(i, j);
-          let isFirst = j % 12 === note - 1;
+          console.log(string, i, j);
+          let isNote = j % 12 === note - 1;
 
-          if (!isFirst) {
+          if (!isNote) {
             continue;
           }
 
