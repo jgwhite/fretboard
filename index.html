@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf8" />
+    <title>Fretboard</title>
+  </head>
+  <body>
+    <style>
+      body {
+        position: relative;
+        margin: 0;
+        padding: 0;
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: stretch;
+      }
+      .neck {
+        width: 256px;
+        position: absolute;
+        top: 32px;
+        bottom: 32px;
+      }
+      .nut {
+        position: absolute;
+        background: black;
+        height: 4px;
+        top: 0%;
+        left: -2px;
+        right: -2px;
+        z-index: 1;
+        margin-top: -2px;
+      }
+      .fret {
+        position: absolute;
+        background: lightgrey;
+        height: 2px;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+        left: -2px;
+        right: -2px;
+        margin-top: -2px;
+      }
+      .string {
+        position: absolute;
+        background: lightgrey;
+        width: 2px;
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        top: -2px;
+        bottom: -2px;
+        margin-left: -2px;
+      }
+      .marker {
+        --size: 16px;
+        position: absolute;
+        background: lightgrey;
+        width: var(--size);
+        height: var(--size);
+        left: calc(50% - var(--size) / 2);
+        border-radius: 100%;
+        margin-top: calc(var(--size) / -2);
+      }
+    </style>
+    <script>
+      let root = document.body;
+      let neck;
+
+      drawFretboard();
+
+      for (let i = 1; i <= 16; i++) {}
+
+      function drawFretboard() {
+        drawNeck();
+        drawNut();
+        for (let i = 1; i <= 16; i++) {
+          drawFret(i);
+        }
+        for (let i = 1; i <= 6; i++) {
+          drawString(i);
+        }
+        for (let i of [3, 5, 7, 9, 12, 15]) {
+          drawMarker(i);
+        }
+      }
+
+      function drawNeck() {
+        neck = document.createElement("div");
+        neck.classList.add("neck");
+        root.appendChild(neck);
+      }
+
+      function drawNut() {
+        let div = document.createElement("div");
+        div.classList.add("nut");
+        neck.appendChild(div);
+      }
+
+      function drawFret(n) {
+        let offset = n / 16;
+        let div = document.createElement("div");
+        div.classList.add("fret");
+        div.style.top = `${offset * 100}%`;
+        neck.appendChild(div);
+      }
+
+      function drawString(n) {
+        let offset = (n - 1) / 5;
+        let div = document.createElement("div");
+        div.classList.add("string");
+        div.style.left = `${offset * 100}%`;
+        neck.appendChild(div);
+      }
+
+      function drawMarker(n) {
+        let offset = (n - 0.5) / 16;
+        let div = document.createElement("div");
+        div.classList.add("marker");
+        div.style.top = `${offset * 100}%`;
+        neck.appendChild(div);
+      }
+    </script>
+  </body>
+</html>
