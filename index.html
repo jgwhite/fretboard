@@ -96,10 +96,12 @@
       [data-degree="♭7"] {
         background-color: #98505a;
       }
-      .picker {
+      .settings {
         position: absolute;
         top: 16px;
         left: 16px;
+        border: 1px solid grey;
+        padding: 1rem;
       }
     </style>
   </head>
@@ -114,7 +116,7 @@
       function draw() {
         root.innerHTML = "";
         drawFretboard();
-        drawPicker();
+        drawSettings();
       }
 
       function drawFretboard() {
@@ -133,18 +135,15 @@
           drawMarker(i);
         }
 
-        for (let i = 1; i <= 6; i++) {
+        for (let string = 1; string <= 6; string++) {
           for (let [offset, degree] of [
             [0, "1"],
             [4, "3"],
             [7, "5"],
             [10, "♭7"],
           ]) {
-            drawOccurrences({
-              string: i,
-              note: ((tonic - 1 + offset) % 12) + 1,
-              degree,
-            });
+            let note = ((tonic - 1 + offset) % 12) + 1;
+            drawOccurrences({ string, note, degree });
           }
         }
       }
@@ -209,34 +208,38 @@
         return [4, 9, 2, 7, 11, 4][string - 1];
       }
 
-      function drawPicker() {
-        let picker = document.createElement("select");
+      function drawSettings() {
+        let div = document.createElement("div");
+        root.appendChild(div);
+        div.classList.add("settings");
+
+        let select = document.createElement("select");
+        div.appendChild(select);
+
         for (let [label, value] of [
           ["C", 1],
-          ["C♯", 2],
+          ["D♭", 2],
           ["D", 3],
-          ["D♯", 4],
+          ["E♭", 4],
           ["E", 5],
           ["F", 6],
           ["F♯", 7],
           ["G", 8],
-          ["G♯", 9],
+          ["A♭", 9],
           ["A", 10],
-          ["A♯", 11],
+          ["B♭", 11],
           ["B", 12],
         ]) {
           let option = document.createElement("option");
           option.value = value;
           option.innerHTML = label;
-          picker.appendChild(option);
-          picker.value = tonic;
+          select.appendChild(option);
+          select.value = tonic;
         }
-        root.appendChild(picker);
-        picker.addEventListener("change", () => {
-          tonic = Number(picker.value);
+        select.addEventListener("change", () => {
+          tonic = Number(select.value);
           draw();
         });
-        picker.classList.add("picker");
       }
     </script>
   </body>
