@@ -101,7 +101,7 @@
         top: 16px;
         left: 16px;
         border: 1px solid grey;
-        padding: 1rem;
+        padding: 0 1rem;
       }
     </style>
   </head>
@@ -209,12 +209,26 @@
       }
 
       function drawSettings() {
-        let div = document.createElement("div");
-        root.appendChild(div);
-        div.classList.add("settings");
+        let settings = document.createElement("form");
+        root.appendChild(settings);
+        settings.classList.add("settings");
+
+        drawSettingsKey(settings);
+        drawSettingsIntervals(settings);
+      }
+
+      function drawSettingsKey(settings) {
+        let p = document.createElement("p");
+        settings.appendChild(p);
+
+        let label = document.createElement("label");
+        p.appendChild(label);
+        label.innerHTML = "Key:";
+
+        p.appendChild(document.createTextNode(" "));
 
         let select = document.createElement("select");
-        div.appendChild(select);
+        p.appendChild(select);
 
         for (let [label, value] of [
           ["C", 1],
@@ -234,12 +248,54 @@
           option.value = value;
           option.innerHTML = label;
           select.appendChild(option);
-          select.value = tonic;
         }
+
+        select.value = tonic;
+
         select.addEventListener("change", () => {
           tonic = Number(select.value);
           draw();
         });
+      }
+
+      function drawSettingsIntervals(settings) {
+        let fieldset = document.createElement("fieldset");
+        settings.appendChild(fieldset);
+
+        let legend = document.createElement("legend");
+        fieldset.appendChild(legend);
+        legend.innerHTML = "Degrees";
+
+        let ul = document.createElement("ul");
+        fieldset.appendChild(ul);
+
+        for (let [interval, value] of [
+          ["1", 1],
+          ["♭2", 2],
+          ["2", 3],
+          ["♭3", 4],
+          ["3", 5],
+          ["4", 6],
+          ["♭5", 7],
+          ["5", 8],
+          ["♯5", 9],
+          ["6", 10],
+          ["♭7", 11],
+          ["7", 12],
+        ]) {
+          let li = document.createElement("li");
+          ul.appendChild(li);
+
+          let checkbox = document.createElement("input");
+          li.appendChild(checkbox);
+          checkbox.type = "checkbox";
+          checkbox.checked = true;
+          checkbox.value = value;
+
+          let label = document.createElement("label");
+          li.appendChild(label);
+          label.innerHTML = interval;
+        }
       }
     </script>
   </body>
