@@ -85,31 +85,87 @@
         font-weight: 600;
       }
       [data-degree="1"] {
-        background-color: #7f2137;
+        background-color: oklch(0.505 0.213 27.518);
+      }
+      [data-degree="♭2"] {
+        background-color: oklch(0.712 0.194 13.428);
+      }
+      [data-degree="2"] {
+        background-color: oklch(0.81 0.117 11.638);
+      }
+      [data-degree="♭3"] {
+        background-color: oklch(0.5 0.134 242.749);
       }
       [data-degree="3"] {
-        background-color: #b1aa6a;
+        background-color: oklch(0.852 0.199 91.936);
+        color: black;
+      }
+      [data-degree="4"] {
+        background-color: oklch(0.704 0.14 182.503);
+      }
+      [data-degree="♭5"] {
+        background-color: oklch(0.511 0.262 276.966);
       }
       [data-degree="5"] {
-        background-color: #1d2f55;
+        background-color: oklch(0.712 0.194 13.428);
+      }
+      [data-degree="♯5"] {
+        background-color: oklch(0.768 0.233 130.85);
+      }
+      [data-degree="6"] {
+        background-color: oklch(0.685 0.169 237.323);
       }
       [data-degree="♭7"] {
-        background-color: #98505a;
+        background-color: oklch(0.627 0.265 303.9);
+      }
+      [data-degree="7"] {
+        background-color: oklch(0.592 0.249 0.584);
       }
       .settings {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
         position: absolute;
         top: 16px;
         left: 16px;
-        border: 1px solid grey;
-        padding: 0 1rem;
+      }
+      .settings fieldset {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
       }
     </style>
   </head>
   <body>
     <script>
+      const INTERVALS = [
+        "1",
+        "♭2",
+        "2",
+        "♭3",
+        "3",
+        "4",
+        "♭5",
+        "5",
+        "♯5",
+        "6",
+        "♭7",
+        "7",
+      ];
+      const PRESETS = [
+        ["Major Triad", ["1", "3", "5"]],
+        ["Major 7th", ["1", "3", "5", "7"]],
+        ["Dominant", ["1", "3", "5", "♭7"]],
+        ["Minor Triad", ["1", "♭3", "5"]],
+        ["Minor 7th", ["1", "♭3", "5", "♭7"]],
+        ["Major Scale", ["1", "2", "3", "4", "5", "6", "7"]],
+        ["Minor Scale", ["1", "2", "♭3", "4", "5", "6", "♭7"]],
+        ["Blues Scale", ["1", "♭3", "4", "♭5", "5", "♭7"]],
+      ];
       let root = document.body;
       let tonic = 1;
       let neck;
+      let degrees = [];
 
       draw();
 
@@ -136,12 +192,8 @@
         }
 
         for (let string = 1; string <= 6; string++) {
-          for (let [offset, degree] of [
-            [0, "1"],
-            [4, "3"],
-            [7, "5"],
-            [10, "♭7"],
-          ]) {
+          for (let degree of degrees) {
+            let offset = INTERVALS.indexOf(degree);
             let note = ((tonic - 1 + offset) % 12) + 1;
             drawOccurrences({ string, note, degree });
           }
@@ -215,20 +267,21 @@
 
         drawSettingsKey(settings);
         drawSettingsIntervals(settings);
+        drawSettingsPresets(settings);
       }
 
       function drawSettingsKey(settings) {
-        let p = document.createElement("p");
-        settings.appendChild(p);
+        let fieldset = document.createElement("fieldset");
+        settings.appendChild(fieldset);
 
-        let label = document.createElement("label");
-        p.appendChild(label);
-        label.innerHTML = "Key:";
+        let legend = document.createElement("legend");
+        fieldset.appendChild(legend);
+        legend.innerHTML = "Key";
 
-        p.appendChild(document.createTextNode(" "));
+        fieldset.appendChild(document.createTextNode(" "));
 
         let select = document.createElement("select");
-        p.appendChild(select);
+        fieldset.appendChild(select);
 
         for (let [label, value] of [
           ["C", 1],
@@ -266,35 +319,48 @@
         fieldset.appendChild(legend);
         legend.innerHTML = "Degrees";
 
-        let ul = document.createElement("ul");
-        fieldset.appendChild(ul);
-
-        for (let [interval, value] of [
-          ["1", 1],
-          ["♭2", 2],
-          ["2", 3],
-          ["♭3", 4],
-          ["3", 5],
-          ["4", 6],
-          ["♭5", 7],
-          ["5", 8],
-          ["♯5", 9],
-          ["6", 10],
-          ["♭7", 11],
-          ["7", 12],
-        ]) {
-          let li = document.createElement("li");
-          ul.appendChild(li);
-
+        for (let interval of INTERVALS) {
           let checkbox = document.createElement("input");
-          li.appendChild(checkbox);
           checkbox.type = "checkbox";
-          checkbox.checked = true;
-          checkbox.value = value;
+          checkbox.checked = degrees.includes(interval);
+          checkbox.value = interval;
 
           let label = document.createElement("label");
-          li.appendChild(label);
           label.innerHTML = interval;
+          label.prepend(checkbox);
+          fieldset.appendChild(label);
+
+          checkbox.addEventListener("change", () => {
+            if (degrees.includes(interval)) {
+              degrees = degrees.filter((d) => d !== interval);
+            } else {
+              degrees = [...degrees, interval].toSorted(
+                (a, b) => INTERVALS.indexOf(a) - INTERVALS.indexOf(b)
+              );
+            }
+
+            console.log(degrees);
+
+            draw();
+          });
+        }
+      }
+
+      function drawSettingsPresets(settings) {
+        let fieldset = document.createElement("fieldset");
+        settings.appendChild(fieldset);
+        let legend = document.createElement("legend");
+        legend.innerHTML = "Presets";
+        fieldset.appendChild(legend);
+
+        for (let [name, value] of PRESETS) {
+          let button = document.createElement("button");
+          button.innerHTML = name;
+          fieldset.appendChild(button);
+          button.addEventListener("click", () => {
+            degrees = value;
+            draw();
+          });
         }
       }
     </script>
