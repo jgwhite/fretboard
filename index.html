@@ -26,8 +26,16 @@
         box-sizing: border-box;
         justify-content: stretch;
       }
+      .neck-container {
+        position: relative;
+        justify-content: stretch;
+        padding-top: 43px;
+      }
       .neck {
         position: relative;
+        min-width: 128px;
+        max-width: 256px;
+        height: 100%;
       }
       .nut {
         position: absolute;
@@ -220,9 +228,12 @@
       }
 
       function drawNeck() {
+        let container = document.createElement("div");
+        container.classList.add("neck-container");
         neck = document.createElement("div");
         neck.classList.add("neck");
-        root.appendChild(neck);
+        container.appendChild(neck);
+        root.appendChild(container);
       }
 
       function drawNut() {
