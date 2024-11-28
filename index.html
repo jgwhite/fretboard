@@ -9,24 +9,25 @@
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
     <style>
+      :root {
+        --min-width: 600px;
+        --padding: 16px;
+      }
       html {
         font-family: system-ui;
       }
       body {
+        display: grid;
         position: relative;
         margin: 0;
-        padding: 0;
-        width: 100vw;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: stretch;
+        padding: var(--padding);
+        grid-template-columns: max-content minmax(128px, 256px);
+        gap: var(--padding);
+        box-sizing: border-box;
+        justify-content: stretch;
       }
       .neck {
-        width: 256px;
-        position: absolute;
-        top: 6.25%;
-        bottom: 6.25%;
+        position: relative;
       }
       .nut {
         position: absolute;
@@ -123,16 +124,26 @@
       }
       .settings {
         display: flex;
+        position: relative;
         flex-direction: column;
         gap: 1rem;
-        position: absolute;
-        top: 16px;
-        left: 16px;
-      }
-      .settings fieldset {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
+
+        --inner-padding: calc(var(--padding) * (2 / 3));
+
+        fieldset {
+          display: flex;
+          flex-direction: column;
+          padding: var(--inner-padding);
+          gap: var(--inner-padding);
+
+          legend {
+            width: fit-content;
+          }
+        }
+
+        input[type="checkbox"] {
+          margin-right: calc(var(--inner-padding) / 2);
+        }
       }
     </style>
   </head>
@@ -179,8 +190,8 @@
 
       function draw() {
         root.innerHTML = "";
-        drawFretboard();
         drawSettings();
+        drawFretboard();
       }
 
       function drawFretboard() {
